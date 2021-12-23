@@ -6,7 +6,9 @@
     using BasicLibraries.VNAControl.VNA.Rohde;
     using SwitchControl;
     using System;
+    using System.Collections.Generic;
     using System.Drawing;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows.Forms;
 using VNAControl.VNA;
@@ -260,6 +262,12 @@ using VNAControl.VNA;
 
                         if (@base.GetData(channelData, CalP.VNAChannelDatas.Count, ref data))
                         {
+                            if (op == "Cal")
+                            {
+                                int index = data.MajorValueOfTheData.Count((i) => i > -50);
+                                MessageBox.Show($"校准结果:\r\n{(index == 0 ? "通过" : $"当前数据存在{index}个点大于-50db,未通过,请检查")}");
+                                b.BackColor = index == 0 ? Color.Green : Color.Red;
+                            }
                             FrmCalChart frmCal = new FrmCalChart();
                             frmCal.UpdateZed(data);
                             frmCal.ShowDialog();
